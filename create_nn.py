@@ -78,9 +78,14 @@ for i in range(len(layer_phases)-1,-1,-1):
 
         if i == len(layer_phases)-1:
             # it is a classifying layer
-            print("\\fcblock{%.2f}{%.2f}{%d}{%d}{%d}{%s}" % (-thickness_fc/2,-y/2,z_tots[k],y,thickness_fc, colours[k%len(colours)]))
+            # args: x,y,z, cuboidHeight, thickness, realHeight, color
+            print("\\fcblock{%.2f}{%.2f}{%d}{%d}{%d}{%d}{%s}" % (-thickness_fc/2,-y/2,z_tots[k],y,thickness_fc, layer[1], colours[k%len(colours)]))
         else:
-            print("\\cnnblock{%.2f}{%.2f}{%d}{%d}{%d}{%d}{%s}{%s}" % (-x/2,-y/2,z_tots[k],x,y,z, colours[k%len(colours)],'false' if j != 0 else 'true'))
+            print("\\cnnblock{%.2f}{%.2f}{%d}{%d}{%d}{%d}{%s}{%d}" % (-x/2,-y/2,z_tots[k],x,y,z, colours[k%len(colours)], layer[2]))
+            if j == 0:
+                # annotate the layer
+                print("\\annotatecnnx{%.2f}{%.2f}{%.2f}{%d}{%d}{%s}" %(-x/2, -y/2, z_tots[k], x, layer[0], colours[k%len(colours)]))
+                print("\\annotatecnny{%.2f}{%.2f}{%.2f}{%d}{%d}{%s}" %(-x/2, -y/2, z_tots[k], y, layer[1], colours[k%len(colours)]))
         
         if k != 0:
             # if i != len(layer_phases)-1 and j == len(layer_phases[i])-1:
