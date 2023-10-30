@@ -1,6 +1,7 @@
 from math import log2, ceil
-FACTOR = 10
-
+FACTOR_Z = 5
+FACTOR_Y = 10
+FACTOR_X = 10
 
 print("\\begin{tikzpicture}[x={(0.5pt,-0.5pt)},y={(0pt,1pt)},z={(1pt,0pt)},thick]")
 
@@ -38,14 +39,14 @@ interval_layers_diff = 40
 z_tots = []
 prev_z = init_z
 
-proc_layer = lambda x: ceil(FACTOR * log2(x+1))
+proc_layer = lambda factor,x: ceil(factor * log2(x+1))
 
 for i in range(len(layer_phases)):
     layers = layer_phases[i]
     for j in range(len(layers)):
         layer = layers[j]
 
-        z = proc_layer(layer[2])
+        z = proc_layer(FACTOR_Z, layer[2])
         z_tots.append(prev_z)
         if j == len(layers)-1:
             prev_z += interval_layers_diff + z
@@ -73,9 +74,11 @@ drew_conv = False
 for i in range(len(layer_phases)-1,-1,-1):
     for j in range(len(layer_phases[i])-1,-1,-1):
         layer = layer_phases[i][j]
-        x = proc_layer(layer[0])
-        y = proc_layer(layer[1])
-        z = proc_layer(layer[2])
+        x = proc_layer(FACTOR_X, layer[0])
+        y = proc_layer(FACTOR_Y, layer[1])
+        z = proc_layer(FACTOR_Z, layer[2])
+        # print(f"x,y,z=({x},{y},{z})")
+        # print(f"layers=({layer[0]},{layer[1]},{layer[2]})")
 
         if k != 0 and not drew_conv:
             # if i != len(layer_phases)-1 and j == len(layer_phases[i])-1:
