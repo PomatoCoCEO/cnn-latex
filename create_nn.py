@@ -76,6 +76,16 @@ for i in range(len(layer_phases)-1,-1,-1):
         x = proc_layer(layer[0])
         y = proc_layer(layer[1])
         z = proc_layer(layer[2])
+
+        if k != 0 and not drew_conv:
+            # if i != len(layer_phases)-1 and j == len(layer_phases[i])-1:
+            print("\\transline{%d}{%d}" % (z_tots[k-1], z_tots[k]))
+        if k < len(z_tots)-1 and i != len(layer_phases)-1:
+            # show dashed convolution with the next layer
+            print("\\dashedconvol{%d}{%d}{%d}{%d}{%d}{%d}" % (-1.5, -1.5, z_tots[k]+z,3,3,z_tots[k+1]))
+            drew_conv = True
+        else:
+            drew_conv = False
     
 
         if i == len(layer_phases)-1:
@@ -89,15 +99,7 @@ for i in range(len(layer_phases)-1,-1,-1):
                 print("\\annotatecnnx{%.2f}{%.2f}{%.2f}{%d}{%d}{%s}" %(-x/2, -y/2, z_tots[k], x, layer[0], colours[k%len(colours)]))
                 print("\\annotatecnny{%.2f}{%.2f}{%.2f}{%d}{%d}{%s}" %(-x/2, -y/2, z_tots[k], y, layer[1], colours[k%len(colours)]))
         
-        if k != 0 and not drew_conv:
-            # if i != len(layer_phases)-1 and j == len(layer_phases[i])-1:
-            print("\\transline{%d}{%d}" % (z_tots[k-1], z_tots[k]))
-        if k < len(z_tots)-1 and i != len(layer_phases)-1:
-            # show dashed convolution with the next layer
-            print("\\dashedconvol{%d}{%d}{%d}{%d}{%d}{%d}" % (-1.5, -1.5, z_tots[k]+z,3,3,z_tots[k+1]))
-            drew_conv = True
-        else:
-            drew_conv = False
+        
         k -= 1
 
 print("\\end{tikzpicture}")
