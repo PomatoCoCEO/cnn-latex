@@ -14,7 +14,7 @@ This package aims to allow the user to easily create CNN representations in LaTe
 The recommended way to use this package is to, after cloning it to your LaTeX project, create a JSON representation of your CNN architecture (you can change the JSON files in the `example` folder to what suits you) and then use the provided Python script to generate the LaTeX code:
 
 ```bash
-python3 json_create.py (path_to_json) > (output_file)
+python3 json_create.py (path_to_json) > (output_file.tex)
 ```
 
 You can then import the generated .tex file into your LaTeX project and compile it. You will get a PDF file with the representation of your CNN architecture.
