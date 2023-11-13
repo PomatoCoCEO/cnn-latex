@@ -1,15 +1,16 @@
 import json
 from math import ceil, log2
+import sys
 
 FACTOR_X = 10
 FACTOR_Y = 10
-FACTOR_Z = 5
+FACTOR_Z = 3
 
 FC_THICKNESS = 5
 
-INTERVAL_BLOCKS = 40
-INTERVAL_CNNS = 5
-INTERVAL_FCS = 5
+INTERVAL_BLOCKS = 30
+INTERVAL_CNNS = 40
+INTERVAL_FCS = 15
 
 
 def load_data_json(filename):
@@ -20,7 +21,7 @@ def load_data_json(filename):
 
 
 def process_dimension(factor, dimension):
-    return ceil(factor * log2(dimension))
+    return ceil(factor * log2(dimension+1))
 
 
 # the only thing that is dependent on the disposition is the Z position, which should be decided
@@ -107,10 +108,11 @@ def get_layer_zs(layers):
                     y_next = next_layer["output_shape"][1]
                     x_curr = layer["output_shape"][0]
                     y_curr = layer["output_shape"][1]
-                    if y_next == y_curr and x_next == x_curr:
-                        curr_z += INTERVAL_CNNS
-                    else:
-                        curr_z += INTERVAL_BLOCKS
+                    curr_z += INTERVAL_CNNS
+                    # if y_next == y_curr and x_next == x_curr:
+                    #     curr_z += INTERVAL_CNNS
+                    # else:
+                    #     curr_z += INTERVAL_BLOCKS
                 elif next_layer["type"] == "fc":
                     curr_z += INTERVAL_BLOCKS
                     # interval 0
@@ -120,7 +122,13 @@ def get_layer_zs(layers):
                     pass
         elif layer_type == "fc":
             curr_z += FC_THICKNESS
-            curr_z += INTERVAL_FCS
+            if i < len(layers) - 1:
+                next_layer = layers[i + 1]
+                if next_layer["type"] == "conv":
+                    curr_z += INTERVAL_BLOCKS
+                else:
+                    curr_z += INTERVAL_FCS
+                
 
         elif layer_type == "maxpool":
             curr_z += INTERVAL_BLOCKS
@@ -155,6 +163,8 @@ def print_all_layers(layers, zs):
             annotate = True
             if i > 0 and layers[i - 1]["type"] in ["conv", "input"]:
                 annotate = False
+                if layers[i - 1]["output_shape"] != layer["output_shape"]:
+                    annotate = True
             print_cnn(layer, zs[i], annotate)
         else:
             print_layer_code(layer, zs[i])
@@ -164,11 +174,19 @@ def build_nn_from_file(filename):
     json_data = load_data_json(filename)
     layers = json_data["architecture"]["layers"]
     zs = get_layer_zs(layers)
+    print("\\begin{figure}")
+    print("\\centering")
     print("\\begin{tikzpicture}[x={(0.5pt,-0.5pt)},y={(0pt,1pt)},z={(1pt,0pt)},thick]")
     print_all_layers(layers, zs)
     print("\end{tikzpicture}")
+    if "caption" in json_data:
+        print("\\caption{" + json_data["caption"] + "}")
+    if "label" in json_data:
+        print("\\label{" + json_data["label"] + "}")
+    print("\\end{figure}")
     # print(zs)
 
 
 if __name__ == "__main__":
-    build_nn_from_file("cnn.json")
+    filename = sys.argv[1]
+    build_nn_from_file(filename)
