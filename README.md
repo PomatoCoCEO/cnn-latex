@@ -17,6 +17,6 @@ The recommended way to use this package is to, after cloning it to your LaTeX pr
 python3 json_create.py (path_to_json) > (output_file.tex)
 ```
 
-You can then import the generated .tex file into your LaTeX project and compile it. You will get a PDF file with the representation of your CNN architecture.
+You can then import the generated .tex file into your LaTeX project and compile it, after importing the `tex/cnn` package, defined in the `tex` folder. You will get a PDF file with the representation of your CNN architecture.
 
 Some of the examples in the `example` folder are already converted into .tex files in the `tex` folder, as well as features to add to the python script, and are imported into the `main.tex` file. The compiled output is available in the `main.pdf` file.
